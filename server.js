@@ -12,11 +12,7 @@ const app = express();
 //logger (morgan) middleware
 
 app.use(logger("dev"));
-app.use(
-  bodyParser.urlencoded({
-    extended: false
-  })
-);
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //route to public folder
 app.use(express.static(process.cwd() + "/public"));
@@ -28,7 +24,9 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 //mongoose
-mongoose.connect("mongodb://localhost/scrapped_news");
+mongoose.connect("mongodb://localhost/scrapped_news", {
+  useNewUrlParser: true
+});
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
