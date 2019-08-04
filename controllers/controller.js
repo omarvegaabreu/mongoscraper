@@ -1,12 +1,12 @@
-const express = require("express");
-const router = express.Router();
-const path = require("path");
+var express = require("express");
+var router = express.Router();
+var path = require("path");
 
-const request = require("request");
-const cheerio = require("cheerio");
+var request = require("request");
+var cheerio = require("cheerio");
 
-const Comment = require("../models/Comment.js");
-const Article = require("../models/Article.js");
+var Comment = require("../models/Comment.js");
+var Article = require("../models/Article.js");
 
 router.get("/", function(req, res) {
   res.redirect("/articles");
@@ -14,11 +14,11 @@ router.get("/", function(req, res) {
 
 router.get("/scrape", function(req, res) {
   request("http://www.theverge.com", function(error, response, html) {
-    const $ = cheerio.load(html);
-    const titlesArray = [];
+    var $ = cheerio.load(html);
+    var titlesArray = [];
 
     $(".c-entry-box--compact__title").each(function(i, element) {
-      const result = {};
+      var result = {};
 
       result.title = $(this)
         .children("a")
@@ -33,7 +33,7 @@ router.get("/scrape", function(req, res) {
 
           Article.count({ title: result.title }, function(err, test) {
             if (test === 0) {
-              const entry = new Article(result);
+              var entry = new Article(result);
 
               entry.save(function(err, doc) {
                 if (err) {
@@ -61,7 +61,7 @@ router.get("/articles", function(req, res) {
       if (err) {
         console.log(err);
       } else {
-        const artcl = { article: doc };
+        var artcl = { article: doc };
         res.render("index", artcl);
       }
     });
@@ -89,8 +89,8 @@ router.get("/clearAll", function(req, res) {
 });
 
 router.get("/readArticle/:id", function(req, res) {
-  const articleId = req.params.id;
-  const hbsObj = {
+  var articleId = req.params.id;
+  var hbsObj = {
     article: [],
     body: []
   };
@@ -102,9 +102,9 @@ router.get("/readArticle/:id", function(req, res) {
         console.log("Error: " + err);
       } else {
         hbsObj.article = doc;
-        const link = doc.link;
+        var link = doc.link;
         request(link, function(error, response, html) {
-          const $ = cheerio.load(html);
+          var $ = cheerio.load(html);
 
           $(".l-col__main").each(function(i, element) {
             hbsObj.body = $(this)
@@ -120,16 +120,16 @@ router.get("/readArticle/:id", function(req, res) {
     });
 });
 router.post("/comment/:id", function(req, res) {
-  const user = req.body.name;
-  const content = req.body.comment;
-  const articleId = req.params.id;
+  var user = req.body.name;
+  var content = req.body.comment;
+  var articleId = req.params.id;
 
-  const commentObj = {
+  var commentObj = {
     name: user,
     body: content
   };
 
-  const newComment = new Comment(commentObj);
+  var newComment = new Comment(commentObj);
 
   newComment.save(function(err, doc) {
     if (err) {
