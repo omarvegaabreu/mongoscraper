@@ -16,7 +16,7 @@ var app = express();
 // Use morgan logger for logging requests
 app.use(logger("dev"));
 // Use body-parser for handling form submissions
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
@@ -27,24 +27,16 @@ mongoose.Promise = Promise;
 //     useMongoClient: true
 // });
 
-
-
 // // Routes
 // // =============================================================
 require("./routes/api-routes.js")(app);
-
-// // Start the server
-// app.listen(PORT, function() {
-//     console.log("App running on port " + PORT + "!");
-// });
 
 var db = process.env.MONGODB_URI || "mongodb://localhost/webscrapingHW";
 
 mongoose.connect(db, function(error) {
   if (error) {
-      return error;
-  }
-  else {
+    return error;
+  } else {
     console.log("Connection Success!");
   }
 });
