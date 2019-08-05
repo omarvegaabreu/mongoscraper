@@ -1,11 +1,12 @@
 //dependencies
-var bodyParser = require("body-parser");
-var mongoose = require("mongoose");
-var logger = require("morgan");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const logger = require("morgan");
+const http = require("http");
 
 //initialize Express app
-var express = require("express");
-var app = express();
+const express = require("express");
+const app = express();
 
 app.use(logger("dev"));
 app.use(
@@ -37,6 +38,7 @@ mongoose
 
 var routes = require("./controllers/controllers");
 app.use("/", routes);
+
 //Create localhost port
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
