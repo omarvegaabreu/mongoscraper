@@ -39,7 +39,7 @@ mongoose
 var routes = require("./controllers/controllers");
 app.use("/", routes);
 
-//Create localhost port
+//Create localhost port.
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
   console.log("Listening on PORT " + port);
