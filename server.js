@@ -1,46 +1,54 @@
-//dependencies
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const logger = require("morgan");
-const http = require("http");
-//initialize Express app
-const express = require("express");
-const app = express();
-const PORT = process.env.PORT || 3000;
+var express = require("express");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+var mongoose = require("mongoose");
 
+// Require all models
+var db = require("./models");
+
+var PORT = process.env.PORT || 3000;
+
+// Initialize Express
+var app = express();
+
+// Configure middleware
+
+// Use morgan logger for logging requests
 app.use(logger("dev"));
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
+// Use body-parser for handling form submissions
+app.use(bodyParser.urlencoded({ extended: false }));
+// Use express.static to serve the public folder as a static directory
+app.use(express.static("public"));
 
-app.use(express.static(process.cwd() + "/public"));
-//Require set up handlebars
-const exphbs = require("express-handlebars");
-app.engine(
-  "handlebars",
-  exphbs({
-    defaultLayout: "main"
-  })
-);
-app.set("view engine", "handlebars");
+// Set mongoose to leverage built in JavaScript ES6 Promises
+// Connect to the Mongo DB
+mongoose.Promise = Promise;
+// mongoose.connect("mongodb://localhost/webscrapingHW", {
+//     useMongoClient: true
+// });
 
-//connecting to MongoDB
-//mongoose.connect("mongodb://localhost/scraped_news");
-let db = process.env.MONGODB_URI || "mongodb://localhost/mongoscraper";
-// mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
-mongoose
-  .connect(db, { useNewUrlParser: true })
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
 
-var routes = require("./controllers/controllers");
-app.use("/", routes);
+// // Routes
+// // =============================================================
+require("./routes/api-routes.js")(app);
 
-//Create localhost port.
+// // Start the server
+// app.listen(PORT, function() {
+//     console.log("App running on port " + PORT + "!");
+// });
+
+var db = process.env.MONGODB_URI || "mongodb://localhost/webscrapingHW";
+
+mongoose.connect(db, function(error) {
+  if (error) {
+      return error;
+  }
+  else {
+    console.log("Connection Success!");
+  }
+});
 
 app.listen(PORT, function() {
-  console.log("Listening on PORT " + PORT);
+  console.log("Listening on port:" + PORT);
 });
