@@ -27,15 +27,13 @@ app.set("view engine", "handlebars");
 
 //connecting to MongoDB
 //mongoose.connect("mongodb://localhost/scraped_news");
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost/mongoscraper";
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+const db = process.env.MONGODB_URI || "mongodb://localhost/mongoscraper";
+// mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
-var db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function() {
-  console.log("Connected to Mongoose!");
-});
+mongoose
+  .connect(db, { useNewUrlParser: true })
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
 var routes = require("./controllers/controllers");
 app.use("/", routes);
